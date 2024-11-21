@@ -6,14 +6,55 @@ class Board
   end
 
   def make_play(player, row, col)
-    board_array[row][col] = player
+    if is_blank?(board_array[row][col])
+      board_array[row][col] = player
+      return true
+    else
+      return false
+    end
   end
 
-  def check_rows
+  def calculate_moves
+    arr = []
+    board_array.map do |row|
+      row_str = row.join.strip
+      
+      arr << row_str
+    end
 
+    board_array.transpose.map do |row|
+      row_str = row.join.strip
+
+      arr << row_str
+    end
+    # add the diagonals
+    arr << [board_array[0][0], board_array[1][1], board_array[2][2]].join
+    arr << [board_array[0][2], board_array[1][1], board_array[2][0]].join
+
+    return arr
   end
 
   def check_victory
-    return nil
+    calculated_moves = calculate_moves
+    puts calculated_moves.inspect
+    victory = nil
+
+    calculated_moves.each do |row|
+      if row.eql?("XXX") 
+        victory = "X"
+        break
+      elsif row.eql?("OOO")
+        victory = "O"
+        break
+      else
+          victory = nil
+      end
+    end
+
+    return victory
+  end
+
+  def is_blank?(value)
+    value.eql?(' ')
   end
 end

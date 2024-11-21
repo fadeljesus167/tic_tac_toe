@@ -1,14 +1,11 @@
 require_relative "board"
-require_relative "player"
 
 class Game
-  attr_reader :board, :playerA, :playerB
+  attr_reader :board
 
   def initialize
     @board = Board.new
-    @playerA = Player.new("X")
-    @playerB = Player.new("O")
-    @turn = @playerA
+    @turn = "X"
   end
 
   def show_board
@@ -23,7 +20,13 @@ class Game
     while !has_finish?
       move = new_move
 
-      board.make_play(current_player_turn, move[0], move[1])
+      if board.make_play(current_player_turn, move[0], move[1])
+        system 'clear'
+        show_board
+      else
+        puts "Invalid move"
+        puts "Repeat your move " + current_player_turn + " wait"
+      end
     end
   end
 
@@ -38,21 +41,20 @@ class Game
     victory = board.check_victory
 
     if victory.nil?
-      return true
-    else
       return false
+    else
+      puts "#{victory} has won!"
+      return true
     end
   end
 
   def current_player_turn
-    turn = @turn
-    
     if @turn.eql?("X")
       @turn = "O"
+      return "X"
     else
       @turn = "X"
+      return "O"
     end
-
-    return turn
   end
 end
